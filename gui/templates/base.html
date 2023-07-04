@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Provisioning Helper Utility</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
+        type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/stylesheet.min.css') }}">
+
+    <!-- Utility specific styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-stylesheet.css') }}">
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+
+    <!-- Font Awesome kit -->
+    <script src="https://kit.fontawesome.com/767b986dd3.js" crossorigin="anonymous"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-acronym sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center my-3" href="{{ url_for('landing') }}">
+                <img src="{{ url_for('static', filename='img/login-logo-bright.svg') }}" width="50" height="50" class="mx-3">
+                <div class="sidebar-brand-text text-left mr-1" id="title">Provisioning Helper Utility</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('landing') }}">
+                    <i class="fa-solid fa-house-chimney"></i>
+                    <span>PHU Dashboard</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Commercial
+            </div>
+
+            <!-- Nav Item - Config Generator -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseConfigGen"
+                    aria-expanded="true" aria-controls="collapseConfigGen">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Config Generator</span>
+                </a>
+                <div id="collapseConfigGen" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Circuits:</h6>
+                        <a class="collapse-item" href="{{ url_for('commercial_configgen', circuit_type='internet') }}">
+                            Internet Transit</a>
+                        <a class="collapse-item"
+                            href="{{ url_for('commercial_configgen', circuit_type='transparent_lan') }}">Transparent
+                            LAN</a>
+                        <a class="collapse-item"
+                            href="{{ url_for('commercial_configgen', circuit_type='vpls') }}">VPLS</a>
+                        <a class="collapse-item"
+                            href="{{ url_for('commercial_configgen', circuit_type='layer2_test') }}">Layer 2 Test
+                            Set</a>
+                        <h6 class="collapse-header">Equipment:</h6>
+                        <a class="collapse-item"
+                            href="{{ url_for('commercial_configgen', circuit_type='raisecom') }}">Raisecom</a>
+                        <a class="collapse-item" href="asr920.html"><s>ASR920</s></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Decom Generator -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('commercial_decomgen') }}">
+                    <i class="fa-solid fa-archive"></i>
+                    <span>Decom Generator</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Utilities -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesComm">
+                    <i class="fa-solid fa-wrench"></i>
+                    <span>Utilities</span>
+                </a>
+                <div id="collapseUtilitiesComm" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Select:</h6>
+                        <a class="collapse-item" href="http://10.75.111.97/coin"><s>COIN Path Names</s></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Ontario Health
+            </div>
+
+            <!-- Nav Item - Config Gen Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <span>Config Generator</span>
+                </a>
+                <div id="collapseTwo" class="collapse"s data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Select:</h6>
+                        <a class="collapse-item" href="{{ url_for('oh_configgen', circuit_type='srx') }}">SRX345/1500</a>
+                        <a class="collapse-item" href="configgen_sdwan.html"><s>SD-WAN</s></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Decom Generator -->
+            <!--        <li class="nav-item">-->
+            <!--            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOhDecomGen"-->
+            <!--               aria-expanded="true" aria-controls="collapseOhDecomGen">-->
+            <!--                <i class="fa-solid fa-archive"></i>-->
+            <!--                <span>Decom Generator</span>-->
+            <!--            </a>-->
+            <!--            <div id="collapseOhDecomGen" class="collapse" data-parent="#accordionSidebar">-->
+            <!--                <div class="bg-white py-2 collapse-inner rounded">-->
+            <!--                    <h6 class="collapse-header">Select:</h6>-->
+            <!--                    <a class="collapse-item" href="{{ url_for('oh_decomgen') }}">Standard SRX Site</a>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <!--        </li>-->
+
+            <!-- Nav Item - Decom Generator -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('oh_decomgen') }}">
+                    <i class="fa-solid fa-archive"></i>
+                    <span>Decom Generator</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitiesOh"
+                    aria-expanded="true" aria-controls="collapseUtilitiesOh">
+                    <i class="fa-solid fa-wrench"></i>
+                    <span>Utilities</span>
+                </a>
+                <div id="collapseUtilitiesOh" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Select:</h6>
+                        <a class="collapse-item" href="{{ url_for('oh_diagram_gen') }}">Diagram Generator</a>
+                        <a class="collapse-item" href="{{ url_for('oh_ip_validator') }}">IP Validator</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- General - Heading -->
+            <div class="sidebar-heading">
+                General
+            </div>
+
+            <!-- Nav Item - Config Gen Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDb">
+                    <i class="fa-solid fa-database"></i>
+                    <span>Database</span>
+                </a>
+                <div id="collapseDb" class="collapse"data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Select:</h6>
+                    <a class="collapse-item" href="{{ url_for('db_viewer', db='commercial') }}">Commercial</a>
+                    <a class="collapse-item" href="{{ url_for('db_viewer', db='ontario_health') }}">Ontario Health</a>
+                </div>
+            </div>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" id="navTop">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <!--                    <form
+                                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                                aria-label="Search" aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="button">
+                                                    <i class="fas fa-search fa-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>-->
+
+                    <!-- Topbar Navbar -->
+                    <img src="{{ url_for('static', filename='img/logo.png') }}">
+                    <ul class="navbar-nav ml-auto">
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 text-right
+                                small font-weight-bold text-uppercase">
+                                    {{ session.get('credentials').username }}<br>
+                                    <div id="credentialsSuccess" class="font-weight-bold text-success text-uppercase"
+                                        style="display: none;">
+                                        <i class="fa-solid fa-circle-check text-success"></i> Credentials
+                                    </div>
+                                    <div id="credentialsInvalid" class="font-weight-bold text-warning text-uppercase"
+                                        style="display: none;">
+                                        <i class="fa-solid fa-triangle-exclamation text-warning"></i> Credentials
+                                    </div>
+                                </span>
+                                <img class="img-profile rounded-circle"
+                                    src="{{ url_for('static', filename='img/undraw_profile.svg') }}">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <!--                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#credentialsModal">-->
+                                <a class="dropdown-item" href="{{ url_for('login') }}">
+                                    <i class="fas fa-sign-in fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Log-in
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    {% block content %} {% endblock %}
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>&copy; Version {{ session['version'] }}</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <script>
+        const credentials = {{ session.get('credentials') | tojson }}
+        if (credentials['valid']) {
+            document.getElementById("credentialsSuccess").style.display = "block";
+        } else {
+            document.getElementById("credentialsInvalid").style.display = "block";
+        }
+
+
+    </script>
+    <!-- Custom scripts for all pages. why doesn't this work if imported at the top?-->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="overlay-spinner spinner-border" style="display: none;"></div>
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Decom Generator - Commercial</h1>
+            <hr />
+
+            <div class="d-flex justify-content-end">
+                <a href="#" class="btn btn-info btn-icon-split btn-sm mb-3" data-toggle="modal"
+                    data-target="#instructionModal">
+                    <span class="icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </span>
+                    <span class="text">Information</span>
+                </a>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display:none">
+                Error fetching rollback configs... check logs for further details.
+            </div>
+
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="display:none">
+                Configs generated! The download should be starting automatically..
+            </div>
+            <form method="POST" enctype="multipart/form-data" autocomplete="off" id="formLoad"
+                action="{{ url_for('generate_decom') }}">
+                <div class="card accordion shadow mb-4" id="accordionForm">
+                    <div class="card">
+                        <a href="#collapseCircuit" class="d-block card-header py-3" data-toggle="collapse"
+                            role="button">
+                            <h6 class="mb-0 font-weight-bold">Circuit Information</h6>
+                        </a>
+
+                        <div id="collapseCircuit" class="collapse show" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="circuitType">Circuit Type
+                                            <a href="#" data-target="#circuitTypeModal" data-toggle="modal" class="ml-1">
+                                                <i class="fas fa-info-circle"></i>
+                                            </a>
+                                        </label>
+                                        <select class="form-control" name="circuitType" id="circuitType" required>
+                                            <option value="autodetect">Autodetect</option>
+                                            <option value="internet">Internet</option>
+                                            <option value="transparent_lan">Transparent LAN</option>
+                                            <option value="vpls">VPLS</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router">Router</label>
+                                        <select class="form-control" name="router" id="router" required>
+                                            <option selected disabled></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <!--<input type="text" class="form-control" name="routerA" id="routerA">-->
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label for="interface">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed" id="portSpeed">
+                                                    <option disabled selected>Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface" id="interface"
+                                                placeholder="0/0/0/0">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="vlan">VLAN</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">.</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="vlan" id="vlan"
+                                            data-validate="vlan" maxlength="4">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body mt-2">
+                            <div>
+                                <button class="btn btn-primary btn-icon-split" type="submit">
+                                    <span class="icon text-white-50">
+                                        <i class="fas fa-download text-white-50" ></i>
+                                        <span class="spinner-border spinner-border-sm mb-1" role="status" style="display: none"></span>
+                                    </span>
+                                    <span class="text" id="buttonText">Generate</span>
+                                </button>
+                            </div>
+                            <a class="small text-danger font-weight-bold" id="credentialsWarning" style="display:none"
+                                href="{{ url_for('login') }}"> Valid credentials required.
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Decom Generator</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Grabs rollback configs and creates a decom for commercial circuits.<br><br>
+                </p>
+                Internet:
+                <ol>
+                    <li>Get interface configs</li>
+                    <li>Get IS-IS configs and any static routes (if applicable)</li>
+                    <li>Check for all BGP configs (neighbor, route-policy, and prefix-set)</li>
+                </ol>
+
+                Transparent LAN:
+                <ol>
+                    <li>Get rollback configs/l2vpn info from the provided router</li>
+                    <li>Get rollback configs for Z-end</li>
+                </ol>
+
+                VPLS:
+                <ol>
+                    <li>Get rollback configs/l2vpn info from the provided router</li>
+                    <li>Discover other legs through the RCH route reflector</li>
+                    <li>Get rollback configs for each leg</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="circuitTypeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Circuit type detection</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Show commands will be used to detect 1 of the 3 circuit types.<br>
+                    You can leave autodetect on and if detection fails (it rarely should), just manually select the circuit type.<br>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script type="text/javascript">
+    var sshRequired = true
+
+
+
+</script>
+<script src="{{ url_for('static', filename='js/commercial-config-gen.js') }}"></script>
+{% endblock %}

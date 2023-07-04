@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-xl-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">IP Validator Results</h1>
+            <hr/>
+            <div class="card-body">
+                <!-- Begin Available IP Card -->
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Accordion -->
+                    <a href="#available_ips" class="d-block card-header bg-success text-white" data-toggle="collapse"
+                       role="button">
+                        <h6 class="m-0 text-white">Available IPs</h6>
+                    </a>
+
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="available_ips">
+                        <div class="card-body">
+                            <p>
+                                {% for ip in ip_validator.results if not ip['conflict']%}
+                                {{ ip['ip_address'] }}<br>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Available IP Card -->
+
+                <!-- Begin Conflict IP Card -->
+                <div class="card shadow mb-4">
+                    <a href="#conflict_ips" class="d-block card-header bg-danger text-white"
+                       data-toggle="collapse"
+                       role="button">
+                        <h6 class="m-0 text-white">Conflicts found</h6>
+                    </a>
+                    <div class="collapse show" id="conflict_ips">
+                        <div class="card-body">
+                            <p>
+                                {% for ip in ip_validator.results if ip['conflict'] %}
+                                {{ ip['ip_address'] }}<br>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Conflict IP Card -->
+
+                <!-- Begin Error IP Card -->
+                <div class="card shadow mb-4">
+                    <a href="#error_ips" class="d-block card-header bg-warning text-white"
+                       data-toggle="collapse"
+                       role="button">
+                        <h6 class="m-0 text-white">Errors (not checked)</h6>
+                    </a>
+                    <div class="collapse show" id="error_ips">
+                        <div class="card-body">
+                            <p>
+                                {% for ip in ip_validator.errors %}
+                                {{ ip }}<br>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- /.container-fluid -->
+{% endblock %}

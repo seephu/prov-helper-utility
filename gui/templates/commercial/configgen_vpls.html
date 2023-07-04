@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Config Generator - VPLS</h1>
+            <hr class="mb-4">
+            <div class="mb-3 text-center">
+                <div class="alert" role="alert" style="display:none"></div>
+                <div class="spinner-border text-secondary" role="status" style="display:none"></div>
+            </div>
+            <form action="{{ url_for('commercial_configgen', circuit_type='vpls') }}" method="post"
+                enctype="multipart/form-data" autocomplete="off">
+                <div class="card accordion shadow mb-4" id="accordionForm">
+
+                    <!-- BEGIN CIRCUIT INFORMATION -->
+                    <div class="card">
+                        <a href="#collapseCircuit" class="d-block card-header py-3" data-toggle="collapse"
+                            role="button">
+                            <h6 class="mb-0 font-weight-bold">Circuit Information</h6>
+                        </a>
+
+                        <div id="collapseCircuit" class="collapse show" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-7">
+                                        <label for="customer">Customer Name</label>
+                                        <input type="text" class="form-control" name="customer" id="customer" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-7">
+                                        <label for="circuitId">Circuit ID</label>
+                                        <input type="text" class="form-control" name="circuitId" id="circuitId" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-7">
+                                        <label for="bdName">Bridge-domain Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="bdName" id="bdName" required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button" id="bdNameButton">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row ">
+                                    <div class="col-5">
+                                        <label for="vpnId">VPN ID</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="vpnId" id="vpnId" required>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-primary" type="button"
+                                                    data-target="#vpnIdModal" data-toggle="modal">
+                                                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-5">
+                                        <label for="bandwidth">Bandwidth</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="bandwidth" id="bandwidth"
+                                                required>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">Mbps</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END CIRCUIT INFORMATION -->
+
+                    <!-- BEGIN LEG 1 -->
+                    <div class="card">
+                        <a href="#collapseLeg1" class="d-block card-header py-3" data-toggle="collapse" role="button">
+                            <h6 class="mb-0 font-weight-bold">Leg 1</h6>
+                        </a>
+
+                        <div id="collapseLeg1" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router1">Router</label>
+                                        <select class="form-control" name="router1" id="router1" required>
+                                            <option selected disabled></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label for="interface1">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed1" id="portSpeed1">
+                                                    <option disabled>Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface1" id="interface1"
+                                                placeholder="0/0/0/0">
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="vlan">VLAN</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">.</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="vlan" id="vlan"
+                                                   maxlength="4" data-validate="vlan" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="description" id="description"
+                                            required>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="descriptionButton">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label for="mtu">MTU Size</label>
+                                        <input type="number" class="form-control" name="mtu" id="mtu" value="1550"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END LEG 1 -->
+
+                    <!--BEGIN LEG 2 -->
+                    <div class="card">
+                        <a href="#collapseLeg2" class="d-block card-header py-3" data-toggle="collapse" role="button">
+                            <h6 class="mb-0 font-weight-bold">Leg 2</h6>
+                        </a>
+                        <div id="collapseLeg2" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router2">Router</label>
+                                        <select class="form-control" name="router2" id="router2" required>
+                                            <option selected disabled></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="interface2">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed2" id="portSpeed2">
+                                                    <option disabled>Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface2" id="interface2"
+                                                placeholder="0/0/0/0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--END LEG 2 -->
+
+                    <!-- BEGIN LEG 3 -->
+                    <div class="card">
+                        <a href="#collapseLeg3" class="d-block card-header py-3" data-toggle="collapse" role="button">
+                            <h6 class="mb-0 font-weight-bold">Leg 3</h6>
+                        </a>
+                        <div id="collapseLeg3" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router3">Router</label>
+                                        <select class="form-control" name="router3" id="router3" required>
+                                            <option selected disabled></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="interface3">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed3" id="portSpeed3">
+                                                    <option disabled>Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface3" id="interface3"
+                                                placeholder="0/0/0/0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END LEG 3 -->
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name='testSetConfigs'
+                                    id="testSetConfigs">
+                                <label class="custom-control-label" for="testSetConfigs">Generate L2 test
+                                    configs</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name='generateDiagram'
+                                    id="generateDiagram" disabled>
+                                <label class="custom-control-label" for="generateDiagram">Generate diagram</label>
+                            </div>
+                            <hr class="my-4">
+                            <button class="btn btn-primary btn-icon-split" type="submit">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-download text-white-50"></i>
+                                </span>
+                                <span class="text">Generate</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="vpnIdModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">VPN ID Checker</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>This will log in to the RCH route reflector (EBCKONCBVRR01) and run:<br>
+                    <code>show bgp l2vpn vpls all | i &lt;vpn id&gt;</code>
+                    <br><br><strong>Proceed?</strong>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary" type="button" id="vpnIdBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script src="{{ url_for('static', filename='js/commercial-config-gen.js') }}"></script>
+{% endblock %}

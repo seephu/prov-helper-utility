@@ -1,0 +1,8 @@
+/build/
+/dist/
+/tests/.pytest_cache/
+/dev files/
+/assets/served_files/
+/assets/upload/
+.env
+/ttp/

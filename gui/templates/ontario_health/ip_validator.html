@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-6 text-gray-800 text-center">Ontario Health - IP Validator</h1>
+            <hr/>
+            <div class="d-flex justify-content-end">
+                <a href="#" class="btn btn-info btn-icon-split btn-sm mb-3" data-toggle="modal"
+                   data-target="#instructionModal">
+                <span class="icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </span>
+                    <span class="text">Information</span>
+                </a>
+            </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Site Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="card-body" style="display: none;" id="loading_screen">
+                        <h6 align="center" class="m-0 font-weight-bold text-primary">Validating..</h6>
+                        <img src="{{ url_for('static', filename='img/loading.svg') }}" class="rounded mx-auto d-block">
+                    </div>
+                    <form action="{{ url_for('oh_ip_validator') }}" method="post" autocomplete="off"
+                          enctype="multipart/form-data" style="display: block;" id="main_screen">
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label for="core_router">ASR903 Router</label>
+                                <select class="form-control" name="core_router" id="core_router">
+                                    {% for core_router in allowed_core_routers %}
+                                    <option value="{{ core_router }}">{{ core_router }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group mt-4">
+                            <label for="diagram">Visio Diagram (.vsd)</label>
+                            <input type="file" class="form-control-file" name="diagram" id="diagram"
+                                   accept=".vsd, .json"
+                                   required>
+                        </div>
+                        <hr class="my-4">
+
+                        <div class="col-sm-20">
+                            <button class="btn btn-primary btn-icon-split" type="submit"
+                                    onclick="toggleLoadingScreen()">
+                                    <span class="icon text-white-50">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </span>
+                                <span class="text">Validate</span>
+                            </button>
+                        </div>
+                        <a class="my-2 small text-danger font-weight-bold" id="credentialsWarning"
+                           style="display:none" href="{{ url_for('login') }}"> Valid credentials required.
+                        </a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">OH IP Validator</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Overview</b> <br>
+                    Extracts all IPs from an Ontario Health diagram, logs into the selected core router,
+                    and checks each IP with command: <br><br>
+                    <code>show ip bgp vpnv4 all | i <u>ip address</u></code>
+                </p>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script>
+function toggleLoadingScreen() {
+  var inputFile = document.getElementById("diagram");
+  var loadingScreen = document.getElementById("loading_screen");
+  var mainScreen = document.getElementById("main_screen");
+  if (inputFile.files.length === 1) {
+    mainScreen.style.display = "none";
+    loadingScreen.style.display = "block";
+  }
+}
+
+var sshRequired = true
+
+</script>
+<script src="{{ url_for('static', filename='js/commercial-config-gen.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Page Description</h1>
+            <hr/>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <a href="#" class="btn btn-info btn-icon-split btn-sm" data-toggle="modal"
+                       data-target="#instructionModal">
+                        <span class="icon text-white-50">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </span>
+                        <span class="text">Instructions</span>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('route_here') }}" method="post" autocomplete="off"
+                          enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="core_router">ASR903 Router</label>
+                            <select class="form-control" name="core_router" id="core_router">
+                                <option>TOROONXNPED12</option>
+                                <option>AUTOFILL FROM DB</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hospital_name">Hospital Name</label>
+                            <input type="text" class="form-control" name="hospital_name" id="hospital_name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="diagram">Visio Diagram (.vsd)</label>
+                            <input type="file" class="form-control-file" name="diagram" id="diagram"
+                                   required>
+                        </div>
+                        <br> <hr/>
+                        <div class="col-sm-20">
+                            <button href="#" class="btn btn-primary btn-icon-split" type="submit">
+                                    <span class="icon text-white-50">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </span>
+                                <span class="text">Validate</span>
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Overview</b> <br>
+                    Script description
+                </p>
+                <hr/>
+                <p><b>How to use</b> <br>
+                    How to <br>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+{% endblock %}

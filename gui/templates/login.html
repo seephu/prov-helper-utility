@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-stylesheet.css') }}">
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+            {% if session.get('credentials').valid %}
+            <div class="alert alert-success">
+                Authenticated and logged in as: {{ session.get('credentials').username }}
+            </div>
+            {% endif %}
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <div class="card o-hidden border-0 shadow-lg">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Log in</h1>
+                                </div>
+
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <form action="{{ url_for('login') }}" method="post" autocomplete="off"
+                                              enctype="multipart/form-data" class="user">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control form-control-user"
+                                                       name="username" id="username"
+                                                       required placeholder="Username">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="password" class="form-control form-control-user"
+                                                       name="password" id="password"
+                                                       placeholder="Password" required>
+                                            </div>
+                                            <hr/>
+                                            <button class="btn btn-primary btn-block btn-user" type="submit">
+                                                <span class="text" id="buttonText">Submit</span>
+                                                <div class="spinner-border spinner-border-sm" role="status" id="spinner"
+                                                     style="display:none">
+                                                </div>
+                                            </button>
+                                            <a href="#" class="text-center small"><p class="text-center mt-2"
+                                                                      data-target="#instructionModal"
+                                                                      data-toggle="modal">Help
+                                            </p></a>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/"><p class="text-center"><i class="fa-solid fa-house"></i> Home</p></a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Credentials</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    This tool uses a static SSH account for scripts that require
+                    device connections (e.g. Decom Generator & IP Validator) so your RSA
+                    token isn't necessary.<br><br>
+
+                    Your gateway credentials are required for this to work.<br>
+                    <strong>Note: </strong>this is your password used in SecureCRT (192.75.109.40).
+                    <br><br>
+
+                    <small>Credentials should persist permanently after first login.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script>
+    $( ':submit' ).click(function() {
+        if($('#username').val().length && $('#password').val().length) {
+            $('#spinner').show();
+            $('#buttonText').hide();
+        }
+    });
+
+
+
+
+
+
+</script>
+{% endblock %}

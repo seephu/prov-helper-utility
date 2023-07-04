@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Config Generator - Internet Transit Circuit</h1>
+            <hr />
+            <form action="{{ url_for('commercial_configgen', circuit_type='internet') }}" method="post"
+                enctype="multipart/form-data" autocomplete="off">
+
+                <div class="progress mb-3 mt-3">
+                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                  </div>
+
+                <div class="card accordion shadow mb-4" id="accordionForm">
+                    <!--Circuit Information-->
+                    <div class="card">
+                        <a href="#collapseCircuit" class="d-block card-header py-3" data-toggle="collapse"
+                            role="button">
+                            <h6 class="mb-0 font-weight-bold">Circuit Information</h6>
+                        </a>
+                        <div id="collapseCircuit" class="collapse show" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="customer">Customer Name</label>
+                                        <input type="text" class="form-control" name="customer" id="customer" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="circuitId">Circuit ID</label>
+                                        <input type="text" class="form-control" name="circuitId" id="circuitId" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label for="bandwidth">Bandwidth</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="bandwidth" id="bandwidth"
+                                                required>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">Mbps</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Routing Protocol</label><br>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="protocolIsis" name="routingProtocol" value="isis"
+                                            class="custom-control-input" onclick="toggleBgpForm()" checked>
+                                        <label class="custom-control-label" for="protocolIsis">IS-IS</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="protocolBgp" name="routingProtocol" value="bgp"
+                                            class="custom-control-input" onclick="toggleBgpForm()">
+                                        <label class="custom-control-label" for="protocolBgp">BGP</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Interface-->
+                    <div class="card">
+                        <a href="#collapseInterface" class="d-block card-header py-3" data-toggle="collapse"
+                            role="button">
+                            <h6 class="mb-0 font-weight-bold">Interface Configuration</h6>
+                        </a>
+                        <div id="collapseInterface" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router">Router</label>
+                                        <select class="form-control" name="router" id="router" required>
+                                            <option></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label for="interface">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed" id="portSpeed" required>
+                                                    <option value="">Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface" id="interface"
+                                                placeholder="0/0/0/0" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="vlan">VLAN</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">.</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="vlan" id="vlan"
+                                                maxlength="4" data-validate="vlan" placeholder="Optional">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="p2pIpBlock">P2P IP Block</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="p2pIpBlock" id="p2pIpBlock"
+                                                data-validate="ip" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">/</span>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <select class="form-control" name="p2pCIDR" id="p2pCIDR">
+                                                    <option>30</option>
+                                                    <option>29</option>
+                                                    <option>28</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="description" id="description"
+                                            required>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                id="descriptionButton">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label for="mtu">MTU Size</label>
+                                        <input type="number" class="form-control" name="mtu" id="mtu" value="1550"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BGP -->
+                    <div class="card" id="cardBgp" style="display:none">
+
+                        <a href="#collapseBgp" class="d-block card-header py-3" data-toggle="collapse" role="button">
+                            <h6 class="mb-0 font-weight-bold">BGP Configuration</h6>
+                        </a>
+
+                        <div id="collapseBgp" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <label for="peerAs">Peer AS</label>
+                                        <input type="number" class="form-control" name="peerAs" id="peerAs">
+                                    </div>
+                                    <div class="col">
+                                        <label for="bgpPwd">BGP Password</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="bgpPwd" id="bgpPwd">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    onclick="generateBgpPassword()">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Route Advertisement</label>
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" name="defaultRoute"
+                                            id="defaultRoute" checked>
+                                        <label class="custom-control-label" for="defaultRoute">
+                                            Default route
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" name='fullRoutingTable'
+                                            id="fullRoutingTable">
+                                        <label class="custom-control-label" for="fullRoutingTable">
+                                            Full routing table
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="prefixList">IP Prefix List</label>
+                                    <textarea class="form-control" name="prefixList" id="prefixList" rows="2"
+                                        placeholder="Optional"></textarea>
+                                    <small class="form-text text-muted">Comma separate multiple prefixes
+                                        e.g. 10.0.0.0/25, 10.0.0.10/25</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name='testSetConfigs'
+                                    id="testSetConfigs">
+                                <label class="custom-control-label" for="testSetConfigs">Generate L2 test
+                                    configs</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name='generateDiagram'
+                                    id="generateDiagram">
+                                <label class="custom-control-label" for="generateDiagram">Generate diagram</label>
+                            </div>
+                            <br>
+                            <button class="btn btn-primary btn-icon-split" type="submit">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-download text-white-50"></i>
+                                </span>
+                                <span class="text">Generate</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Overview</b> <br>
+                    Script description
+                </p>
+                <hr />
+                <p><b>How to use</b> <br>
+                    How to <br>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script src="{{ url_for('static', filename='js/commercial-config-gen.js') }}"></script>
+{% endblock %}

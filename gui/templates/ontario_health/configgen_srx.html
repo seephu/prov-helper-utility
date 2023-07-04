@@ -1,0 +1,777 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Config Generator - OH SRX</h1>
+            <hr />
+            <form action="{{ url_for('oh_configgen', circuit_type='oh_srx') }}" method="post" enctype="multipart/form-data"
+                autocomplete="off">
+                <input type="hidden" name="circuitType" id="circuitType" value="oh_srx">
+                <!-- BEGIN FORM TYPE CARD -->
+                <div class="card shadow" id="formTypeCard">
+                    <a href="#collapseFormType" class="d-block card-header py-3" data-toggle="collapse">
+                        <h6 class="mb-0 font-weight-bold">Select a form type</h6>
+                    </a>
+                    <div class="collapse show" id="collapseFormType">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-6">
+                                    <label for="formType">Form Type</label>
+                                    <select class="form-control" id="formType" name="formType">
+                                        <option value="manual" selected>Start from scratch</option>
+                                        <option value="varsFile">Use an existing vars file</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="manualInput">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="siteType">Site Type</label>
+                                        <select class="form-control" name="siteType" id="siteType">
+                                            <option selected disabled></option>
+                                            <option value="single">Single CPE</option>
+                                            <option value="dual">Dual CPE</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-3">
+                                        <label for="numServices">Number of Services</label>
+                                        <input type="text" class="form-control" name="numServices" id="numServices"
+                                        maxlength="1">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name='onlyServices'
+                                            id="onlyServices" disabled>
+                                        <label class="custom-control-label" for="onlyServices">Service(s) only (TBD)</label>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary mt-4 btn-block" type="button" id="formTypeBtn">
+                                    <span class="icon text-white-50">
+                                        <i class="fa-solid fa-angles-down"></i>
+                                    </span>
+                                </button>
+                                <p class="small text-danger font-weight-bold text-center mt-3 mb-0" style="display: none" id="showFormError"> 
+                                    Site type and/or # of services missing </p>
+                            </div>
+
+                            <div id="varsInput" style="display:none">
+                                <div class="form-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="varsFile" name="varsFile"
+                                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        <label class="custom-file-label" for="varsFile">Choose file</label>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-icon-split" type="submit">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-download text-white-50"></i>
+                                        </span>
+                                        <span class="text">Generate</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- END FORM TYPE CARD -->
+                <!-- <div class="card text-center mt-3" id="siteNavPills"> -->
+                    <div class="card text-center mt-3" id="siteNavPills" style="display:none">
+                    <ul class="nav nav-pills card-header-pills nav-fill">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#primary" data-toggle="tab">Primary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#backup" data-toggle="tab">Backup</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- BEGIN FORM CONTENT -->
+                <!-- <div class="tab-content mt-4 mb-5" id="formContent"> -->
+                    <div class="tab-content mt-4 mb-5" id="formContent" style="display:none">
+                        <div class="progress mb-3 mt-3">
+                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                          </div>
+                    <!-- BEGIN PRIMARY TAB PANE -->
+                    <div class="tab-pane fade show active" id="primary">
+                        <div class="accordion shadow mb-4" id="accordionPrimary">
+
+                            <!-- BEGIN SECTION - PRIMARY - CUSTOMER SITE INFO -->
+                            <div class="card">
+                                <a href="#collapseSiteInfo" class="d-block card-header py-3" data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Site Information</h6>
+                                </a>
+                                <div id="collapseSiteInfo" class="collapse show" data-parent="#accordionPrimary">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="siteId">Site Key</label>
+                                                <input type="text" class="form-control" name="siteId" id="siteId"
+                                                    required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="msuId">MSU ID</label>
+                                                <input type="text" class="form-control" name="msuId" id="msuId"
+                                                    required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="lhinId">LHIN ID</label>
+                                                <select class="form-control" name="lhinId" id="lhinId" required>
+                                                    <option value="" selected disabled>Select a LHIN</option>
+                                                    {% for id, values in OH_DB.lhin_sites.items() %}
+                                                    <option value="{{ id }}">{{ id }} - {{ values['lhin_name'] }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="peRouter">PE Router</label>
+                                                <select class="form-control" name="peRouter" id="peRouter"
+                                                    required>
+                                                    <option value="" selected disabled>Select a PE router</option>
+                                                    {% for router in OH_DB.get_all('pe_sites') %}
+                                                    <option>{{ router }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="siteBandwidth">Site Bandwidth</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control"
+                                                        name="siteBandwidth" id="siteBandwidth"
+                                                        required>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">Mbps</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - PRIMARY - CUSTOMER SITE INFO -->
+
+                            <!-- BEGIN SECTION - PRIMARY - CUSTOMER EQUIPMENT -->
+                            <div class="card">
+                                <a href="#collapseEquipment" class="d-block card-header py-3 collapsed"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Customer Equipment</h6>
+                                </a>
+                                <div id="collapseEquipment" class="collapse" data-parent="#accordionPrimary">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="deviceType">Device Type</label>
+                                                <select class="form-control" name="deviceType" id="deviceType" required>
+                                                    <option value="" selected disabled>Select a device type</option>
+                                                    <option>SRX345</option>
+                                                    <option>SRX1500</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="cpeRouter">Equipment Name</label>
+                                                <input type="text" class="form-control" name="cpeRouter" id="cpeRouter"
+                                                    required>
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="loopbackIp">Loopback IP</label>
+                                                <input type="text" class="form-control" name="loopbackIp"
+                                                    id="loopbackIp" data-validate="ip" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="cpeReth">SRX RETH Interface</label>
+                                                <select class="form-control" name="cpeReth" id="cpeReth"
+                                                    required>
+                                                    <option value="">Select a device type</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="uplinkPortSpeed">Uplink Port Speed</label>
+                                                <div class="input-group">
+                                                    <select class="form-control" name="uplinkPortSpeed"
+                                                        id="uplinkPortSpeed" required>
+                                                        <option>1000</option>
+                                                        <option>100</option>
+                                                        <option>10</option>
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">Mbps</div>
+                                                    </div>
+                                                </div>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - PRIMARY - CUSTOMER EQUIPMENT -->
+
+                            <!-- BEGIN SECTION - PRIMARY - MANAGEMENT & VPN -->
+                            <div class="card">
+                                <a href="#collapseManagement" class="d-block card-header py-3 collapsed"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Management & VPN</h6>
+                                </a>
+                                <div id="collapseManagement" class="collapse" data-parent="#accordionPrimary">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="nmsVlan">NMS VLAN</label>
+                                                <input type="text" class="form-control" name="nmsVlan" id="nmsVlan"
+                                                    maxlength="4" data-validate="vlan" required>
+                                            </div>
+                                            <div class="col">
+                                                <label for="nmsSubnet">NMS Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="nmsSubnet"
+                                                        id="nmsSubnet" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">31</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="vpnVlan">VPN VLAN</label>
+                                                <input type="text" class="form-control" name="vpnVlan" id="vpnVlan"
+                                                    maxlength="4" data-validate="vlan" required>
+                                            </div>
+                                            <div class="col">
+                                                <label for="vpnSubnet">VPN Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="vpnSubnet"
+                                                        id="vpnSubnet" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">31</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="terminalServer">
+                                            <div class="col-4">
+                                                <label for="termServer">Terminal Server Name</label>
+                                                <input type="text" class="form-control" name="termServer"
+                                                    id="termServer" required>
+                                            </div>
+                                            <div class="col">
+                                                <label for="termServerSubnet">Terminal Server Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="termServerSubnet"
+                                                        id="termServerSubnet" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">30</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="nniPortSpeed">NNI Interface</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <select class="form-control" name="nniPortSpeed"
+                                                            id="nniPortSpeed" required>
+                                                            <option value="" disabled>Select</option>
+                                                            {% for val in interface_speeds.values() %}
+                                                            <option value="{{ val['value'] }}">{{ val['select'] }}
+                                                            </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        name="nniInterface" id="nniInterface"
+                                                        placeholder="0/0/0/0" required>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="stagVlan">S-TAG VLAN</label>
+                                                <input type="text" class="form-control" name="stagVlan" id="stagVlan"
+                                                       maxlength="4" data-validate="vlan" placeholder="Optional">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - PRIMARY - MANAGEMENT & VPN -->
+
+
+                            <!-- BEGIN SECTION - PRIMARY - SERVICES -->
+                            <div class="card" id="servicePrimary">
+                                <a href="#collapseService" class="d-block card-header py-3 collapsed"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Service #</h6>
+                                </a>
+                                <div id="collapseService" class="collapse" data-parent="#accordionPrimary">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <!-- <div class="col-6">
+                                                <label for="serviceClci">Circuit ID</label>
+                                                <input type="text" class="form-control" name="serviceClci"
+                                                    id="serviceClci" required>
+                                            </div> -->
+                                            <div class="col-6">
+                                                <label for="serviceClci">Circuit ID</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="serviceClci"
+                                                        id="serviceClci" required>
+                                                    <div class="input-group-append" id="clciSuffix">
+                                                        <div class="input-group-text">:P</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="serviceType">Service Type</label>
+                                                <select class="form-control" name="serviceType" id="serviceType"
+                                                    required>
+                                                    <option></option>
+                                                    {% for vrf in OH_DB.get_all('vpn_services') %}
+                                                    <option>{{ vrf }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="serviceCpePortSpeed">Port Speed</label>
+                                                <div class="input-group">
+                                                    <select class="form-control" name="serviceCpePortSpeed"
+                                                        id="serviceCpePortSpeed" required>
+                                                        <option>1000</option>
+                                                        <option>100</option>
+                                                        <option>10</option>
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">Mbps</div>
+                                                    </div>
+                                                </div>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="serviceCpePort">CPE Port</label>
+                                                <select class="form-control port-select" name="serviceCpePort" id="serviceCpePort"
+                                                    required>
+                                                    <option value="">Select a device type</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col">
+                                                <label for="serviceCpeSubnet">CPE Interface Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="serviceCpeSubnet"
+                                                        id="serviceCpeSubnet" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <select class="form-control" name="serviceCpeCidr"
+                                                            id="serviceCpeCidr">
+                                                            {% for cidr in range(30, 15, -1) %}
+                                                            <option>{{ cidr }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col">
+                                                <label for="serviceRoutedHosts">Routed Hosts</label>
+                                                <textarea class="form-control" name="serviceRoutedHosts"
+                                                    id="serviceRoutedHosts" placeholder="Optional" rows="3"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="serviceVlan">PE-VPN VLAN</label>
+                                                <input type="text" class="form-control" name="serviceVlan"
+                                                    id="serviceVlan" maxlength="4" data-validate="vlan" required>
+                                            </div>
+
+                                            <div class="col">
+                                                <label for="servicePeSubnet">PE-VPN Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control"
+                                                        name="servicePeSubnet" id="servicePeSubnet"
+                                                        data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">30</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="bandwidthForm" style="display: none">
+                                            <div class="col-5">
+                                                <label for="serviceBandwidth">Bandwidth</label>
+                                                <input type="text" class="form-control" name="serviceBandwidth"
+                                                    id="serviceBandwidth">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="ipslaForm">
+                                            <div class="col-5">
+                                                <label for="servicePrimaryIpsla">Primary IPSLA Entry</label>
+                                                <input type="text" class="form-control" name="servicePrimaryIpsla"
+                                                    id="servicePrimaryIpsla">
+                                            </div>
+                                            <div class="col-5">
+                                                <label for="serviceBackupIpsla">Backup IPSLA Entry</label>
+                                                <input type="text" class="form-control" name="serviceBackupIpsla"
+                                                    id="serviceBackupIpsla">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - PRIMARY - SERVICES -->
+
+                        </div>
+                    </div>
+                    <!-- END PRIMARY TAB PANE -->
+
+                    <!-- BEGIN BACKUP TAB PANE -->
+                    <div class="tab-pane fade" id="backup">
+                        <div class="accordion shadow mb-4" id="accordionBackup">
+
+                            <!-- BEGIN SECTION - BACKUP - CUSTOMER EQUIPMENT -->
+                            <div class="card">
+                                <a href="#collapseSiteInfoBackup" class="d-block card-header py-3"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Site Information</h6>
+                                </a>
+                                <div id="collapseSiteInfoBackup" class="collapse show" data-parent="#accordionBackup">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="peRouterBackup">PE Router</label>
+                                                <select class="form-control" name="peRouterBackup" id="peRouterBackup"
+                                                    required>
+                                                    <option></option>
+                                                    {% for router in OH_DB.get_all('pe_sites') %}
+                                                    <option>{{ router }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="siteBandwidthBackup">Site Bandwidth</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control"
+                                                        name="siteBandwidthBackup" id="siteBandwidthBackup"
+                                                        required>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">Mbps</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - BACKUP - CUSTOMER EQUIPMENT -->
+
+                            <!-- BEGIN SECTION - BACKUP - MANAGEMENT & VPN -->
+                            <div class="card">
+                                <a href="#collapseManagementBackup" class="d-block card-header py-3 collapsed"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Management & VPN</h6>
+                                </a>
+                                <div id="collapseManagementBackup" class="collapse" data-parent="#accordionBackup">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="nmsVlanBackup">NMS VLAN</label>
+                                                <input type="text" class="form-control" name="nmsVlanBackup"
+                                                    id="nmsVlanBackup" maxlength="4" data-validate="vlan" required>
+                                            </div>
+                                            <div class="col">
+                                                <div class="input-group">
+                                                    <label for="nmsSubnetBackup">NMS Subnet</label>
+                                                    <div class="input-group"> <input type="text" class="form-control"
+                                                            name="nmsSubnetBackup" id="nmsSubnetBackup" data-validate="ip"
+                                                            required>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">/</span>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">31</div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="vpnVlanBackup">VPN VLAN</label>
+                                                <input type="text" class="form-control" name="vpnVlanBackup"
+                                                    id="vpnVlanBackup" maxlength="4" data-validate="vlan" required>
+                                            </div>
+                                            <div class="col">
+                                                <label for="vpnSubnetBackup">VPN Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="vpnSubnetBackup"
+                                                        id="vpnSubnetBackup" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">31</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="terminalServerBackup">
+                                            <div class="col">
+                                                <label for="termServerSubnetBackup">Terminal Server Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="termServerSubnetBackup"
+                                                        id="termServerSubnetBackup" data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">30</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="nniPortSpeedBackup">NNI Interface</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <select class="form-control" name="nniPortSpeedBackup"
+                                                            id="nniPortSpeedBackup" required>
+                                                            <option value="" disabled>Select</option>
+                                                            {% for val in interface_speeds.values() %}
+                                                            <option value="{{ val['value'] }}">{{ val['select'] }}
+                                                            </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        name="nniInterfaceBackup" id="nniInterfaceBackup"
+                                                        placeholder="0/0/0/0" required>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="stagVlanBackup">S-TAG VLAN</label>
+                                                <input type="text" class="form-control" name="stagVlanBackup" id="stagVlanBackup"
+                                                       maxlength="4" placeholder="Optional" data-validate="vlan">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - BACKUP - MANAGEMENT & VPN -->
+
+                            <!-- BEGIN SECTION - BACKUP - SERVICES -->
+                            <div class="card" id="serviceBackup">
+                                <a href="#collapseServiceBackup" class="d-block card-header py-3"
+                                    data-toggle="collapse">
+                                    <h6 class="mb-0 font-weight-bold">Service #</h6>
+                                </a>
+                                <div id="collapseServiceBackup" class="collapse" data-parent="#accordionBackup">
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="serviceCpePortBackup">CPE Port</label>
+                                                <input type="text" class="form-control" name="serviceCpePortBackup" id="serviceCpePortBackup"
+                                                    readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="serviceClciBackup">Circuit ID</label>
+                                                <input type="text" class="form-control" name="serviceClciBackup" id="serviceClciBackup"
+                                                    readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-5">
+                                                <label for="serviceVlanBackup">PE-VPN VLAN</label>
+                                                <input type="text" class="form-control" name="serviceVlanBackup"
+                                                    id="serviceVlanBackup" data-validate="vlan" maxlength="4" required>
+                                            </div>
+
+                                            <div class="col">
+                                                <label for="servicePeSubnetBackup">PE-VPN Subnet</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control"
+                                                        name="servicePeSubnetBackup" id="servicePeSubnetBackup"
+                                                        data-validate="ip" required>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">/</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <div class="input-group-text">30</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" id="bandwidthFormBackup" style="display: none">
+                                            <div class="col-5">
+                                                <label for="serviceBandwidthBackup">Bandwidth</label>
+                                                <input type="text" class="form-control" name="serviceBandwidthBackup"
+                                                    id="serviceBandwidthBackup">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SECTION - BACKUP - SERVICES -->
+
+                        </div>
+                    </div>
+                    <!-- END BACKUP TAB PANE -->
+
+
+                </div>
+                <!-- END FORM CONTENT -->
+
+                <!-- BEGIN REVIEW & SUBMIT -->
+                <div class="card shadow my-4" id="reviewForm" style="display:none">
+                    <div class="card-header h6 text-primary font-weight-bold">
+                        Review & Submit
+                    </div>
+                    <div class="card-body">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name='generateDiagram'
+                                id="generateDiagram">
+                            <label class="custom-control-label" for="generateDiagram">Generate diagram</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name='generateDataFile'
+                                id="generateDataFile" disabled>
+                            <label class="custom-control-label" for="generateDataFile">Generate EAI data file</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name='validateIpAddrs'
+                                id="generateDatavalidateIpAddrsFile" disabled>
+                            <label class="custom-control-label" for="validateIpAddrs">Validate IP addresses</label>
+                        </div>
+                        <hr class="my-4">
+                        <button class="btn btn-primary btn-icon-split" type="submit">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-download text-white-50"></i>
+                            </span>
+                            <span class="text">Generate</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- END ADDITIONAL OPTIONS & SUBMIT -->
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Overview</b> <br>
+                    Script description
+                </p>
+                <hr />
+                <p><b>How to use</b> <br>
+                    How to <br>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script src="{{ url_for('static', filename='js/oh-config-gen.js') }}"></script>
+<script>
+    var PORTS = {
+        'physicalPorts': {{ OH_DB.physical_ports| tojson }},
+        'rethPorts': {{ OH_DB.reth_ports| tojson }}
+     };
+</script>
+
+{% endblock %}

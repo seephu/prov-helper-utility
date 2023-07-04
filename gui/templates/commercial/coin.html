@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">COIN Path Names</h1>
+            <hr/>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <a href="#" class="btn btn-info btn-icon-split btn-sm" data-toggle="modal"
+                       data-target="#instructionModal">
+                        <span class="icon text-white-50">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </span>
+                        <span class="text">Instructions</span>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="col-6">
+                            <label for="numPops">Number of POP Sites</label>
+                            <input type="number" class="form-control" name="numPops" id="numPops" maxlength="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-6">
+                            <button href="#" class="btn btn-primary btn-block" id="submitNumPops">
+                                <span class="icon text-white-50">
+                                    <i class="fa-solid fa-arrow-down"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col">
+                            <input type="text" class="form-control" name="popBox1" id="popBox1">
+                        </div>
+                    </div>
+                    <br> <hr/>
+                    <div class="col-sm-20">
+                        <button href="#" class="btn btn-primary btn-icon-split" type="submit">
+                                <span class="icon text-white-50">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
+                            <span class="text">Validate</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Overview</b> <br>
+                    Helps with modeling Private Line circuits in EAI by providing the path names of each POP DWDM connection.<br>
+                    INSERT PIC OF CLOUD
+                </p>
+                <hr/>
+                <p><b>How to use</b> <br>
+                    1. Enter # of POP sites<br>
+                    2. Fill in all POPs and click Generate<br>
+                    3. Generated path names should correspond to their EAI path (if not, swap the 2 POP DWDMs around)<br>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+{% endblock %}

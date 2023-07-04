@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="overlay-spinner spinner-border" style="display: none;"></div>
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Decom Generator - OH Standard SRX Site</h1>
+            <hr/>
+            <div class="d-flex justify-content-end">
+                <a href="#" class="btn btn-info btn-icon-split btn-sm mb-3" data-toggle="modal"
+                   data-target="#instructionModal">
+                <span class="icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </span>
+                    <span class="text">Information</span>
+                </a>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display:none">
+                Error fetching rollback configs... check logs for further details.
+            </div>
+
+            <div class="alert alert-success alert-dismissible fade show" role="alert" style="display:none">
+                Configs generated! The download should be starting automatically..
+            </div>
+
+            <form action="{{ url_for('generate_decom') }}" method="POST" id="formLoad"
+                  enctype="multipart/form-data" autocomplete="off">
+
+                  <div class="progress mb-3 mt-3">
+                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                  </div>
+
+                <div class="card accordion shadow mb-4" id="accordionForm">
+                    <div class="card">
+                        <a href="#collapseSite" class="d-block card-header py-3" data-toggle="collapse"
+                           role="button">
+                            <h6 class="mb-0 font-weight-bold">Site Information</h6>
+                        </a>
+                        <div id="collapseSite" class="collapse show" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <input type="hidden" name="circuitType" value="oh_srx">
+                                    <div class="col-6">
+                                        <label for="clei">CPE Hostname</label>
+                                        <input type="text" class="form-control" name="clei" id="clei" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="nmsVlan">NMS VLAN</label>
+                                        <input type="text" class="form-control" name="nmsVlan" id="nmsVlan"
+                                               maxlength="4" data-validate="vlan" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="vpnVlan">VPN VLAN</label>
+                                        <input type="text" class="form-control" name="vpnVlan" id="vpnVlan"
+                                               maxlength="4" data-validate="vlan" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="peRouter">PE Router</label>
+                                        <select class="form-control" name="peRouter" id="peRouter" required>
+                                            <option value="" selected disabled>Select a PE router</option>
+                                            {% for router in pe_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="nniPortSpeed">NNI Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="nniPortSpeed" id="nniPortSpeed" required>
+                                                    <option value="">Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="nniInterface" id="nniInterface"
+                                                   placeholder="0/0/0/0" required></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <a href="#collapseServices" class="d-block card-header py-3" data-toggle="collapse"
+                           role="button">
+                            <h6 class="mb-0 font-weight-bold">Services</h6>
+                        </a>
+                        <div id="collapseServices" class="collapse" data-parent="#accordionForm">
+                            <div class="card-body" id="serviceCard">
+                                <div class="form-group row">
+                                    <div class="col-3">
+                                        <label for="numServices"># of Services</label>
+                                        <select class="form-control" name="numServices" id="numServices" required>
+                                            <option></option>
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                            <option>6</option>
+                                            <option>7</option>
+                                            <option>8</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" id="serviceRow" style="display:none">
+                                    <div class="col-6">
+                                        <label for="serviceVlan">Service VLAN #</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div id="serviceDiv">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body mt-2">
+                            
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name='multithreading' id="multithreading">
+                            <label class="custom-control-label" for="multithreading">Enable multithreading</label>
+                            <a href="#" data-target="#multithreadingModal" data-toggle="modal">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                        <br>
+                        <button class="btn btn-primary btn-icon-split" type="submit">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-download text-white-50"></i>
+                                <span class="spinner-border spinner-border-sm mb-1" role="status" style="display: none"></span>
+                            </span>
+                            <span class="text" id="buttonText">Generate</span>
+                        </button><br>
+                            <a class="small text-danger font-weight-bold" id="credentialsWarning"
+                               style="display:none" href="{{ url_for('login') }}"> Valid credentials required.
+                            </a>
+                        </div>
+                    </div>
+
+
+
+                    <!--                <div class="card">-->
+                    <!--                    <div class="card-body">-->
+                    <!--                        <button class="btn btn-primary btn-icon-split" type="submit">-->
+                    <!--                            <span class="icon text-white-50">-->
+                    <!--                                    <i class="fas fa-download text-white-50"></i>-->
+                    <!--                                </span>-->
+                    <!--                            <span class="text" id="buttonText">Generate</span>-->
+                    <!--                            <div class="spinner-border" role="status" id="spinner" style="display:none">-->
+                    <!--                              <span class="sr-only">Loading...</span>-->
+                    <!--                            </div>-->
+                    <!--                        </button>-->
+                    <!--                    <a class="my-2 small text-danger font-weight-bold" id="credentialsWarning"-->
+                    <!--                       style="display:none" href="{{ url_for('login') }}"> Valid credentials required.-->
+                    <!--                    </a>-->
+                    <!--                    </div>-->
+                    <!--                </div>-->
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Overview</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Grabs rollback configs and creates a decom for a standard Ontario Health site.<br><br>
+                    The following commands will be run:
+                </p>
+
+                <b>Edge Router</b>
+                <ul>
+                    <li>...</li>
+                </ul>
+
+                <b>VPN Concentrator</b>
+                <ul>
+                    <li>...</li>
+                </ul>
+
+                <b>Core Router</b>
+                <ul>
+                    <li>...</li>
+                </ul>
+
+                <b>IP SLA Router</b>
+                <ul>
+                    <li>...</li>
+                </ul>
+                <br>
+                <small><b>Note:</b> this is a strictly a read-only script that runs show commands.</small>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="multithreadingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Multithreading</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    By default, the script will get rollbacks from each router sequentially.<br>
+                    Enable multithreading for simultaneous log ins.<br><br>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script type="text/javascript">
+    var sshRequired = true
+
+</script>
+<script src="{{ url_for('static', filename='js/oh-config-gen.js') }}"></script>
+{% endblock %}

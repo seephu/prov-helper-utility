@@ -1,0 +1,229 @@
+
+/*--------------------------------------------------------------
+# Override Bootstrap styles
+--------------------------------------------------------------*/
+:root {
+  scroll-behavior: smooth;
+}
+
+a {
+  color: #0088b2;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a:hover {
+  color: #006888;
+  text-decoration: underline;
+}
+
+.bg-acronym {
+  background-color: #203d4e;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #386d8b;
+  border-color: #0077b5;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #00455a;
+  border-color: #005670;
+}
+
+.btn-primary:focus, .btn-primary.focus {
+  color: #fff;
+  background-color: #386d8b;
+  border-color: #386d8b;
+  box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5);
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #20465c;
+  border-color: #20465c;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #386d8b;
+  border-color: #386d8b;
+}
+
+.btn-outline-primary {
+  color: #386d8b;
+  border-color: #386d8b;
+}
+
+.btn-outline-primary:hover{
+  color: #ceff1d;
+  background-color: #386d8b;
+  border-color: #386d8b;
+}
+
+.list-group-item.active {
+  z-index: 2;
+  color: #fff;
+  background-color: #386d8b;
+  border-color: #386d8b;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #007497;
+  transition: width .6s ease;
+}
+
+.text-primary {
+  color: #007497 !important
+}
+
+option:disabled {
+  color: rgba(75, 75, 75, 0.342)
+}
+  
+
+/*--------------------------------------------------------------
+# New custom styles
+--------------------------------------------------------------*/
+.bg-login-image {
+    background: url('../img/login-logo.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #20465c;
+}
+
+.error-inline {
+    font-size: 80%;
+    font-weight: 400;
+    color: red;
+}
+
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.overlay-spinner {
+    position: fixed;
+    z-index: 1031;
+    top: 50%;
+    right: 50%;
+    width: 75px;
+    height: 75px;
+    border-width: 2px;
+}
+
+.btn-purple {
+  color: #fff;
+  background-color: #65028e;
+  border-color: #65028e;
+}
+
+.btn-outline-purple {
+  color: #005670;
+  border-color: #005670;
+}
+
+.btn-outline-purple:hover{
+  color: #fff;
+  background-color: #65028e;
+  border-color: #65028e;
+}
+
+.nav-tabs .nav-item .active {
+  color: #fff;
+  background-color: #386d8b;
+}
+
+.nav-tabs .nav-item .nav-link:hover {
+  color: #fff;
+  background-color: #26485c;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #386d8b;
+}
+
+.sidebar-brand-text:hover {
+  color: #ceff1d;
+}
+
+/*--------------------------------------------------------------
+# Landing page
+--------------------------------------------------------------*/
+.hero {
+  width: 100%;
+  height: 100vh;
+  background: url(../img/hero-bg.png) top center no-repeat;
+  background-size: cover;
+}
+
+#hero {
+  overflow:hidden
+}
+
+.hero-header body h1 {
+  font-family: "Nunito", sans-serif !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.scripts .script-box {
+  box-shadow: 0px 0 30px rgba(150, 150, 150, 0.08);
+  height: 100%;
+  padding: 60px 30px;
+  text-align: center;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.scripts .script-box:hover {
+  background: #26485c;
+}
+
+.scripts .script-box:hover h3,
+.scripts .script-box:hover p{
+  color: #fff;
+}
+
+.scripts .script-box:hover .icon {
+  color: #ceff1d;
+}
+
+.scripts .script-box .icon {
+  font-size: 36px;
+  padding: 40px 20px;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 25px;
+  display: inline-block;
+  line-height: 0;
+  transition: 0.3s;
+  color: #65028e;
+  /* background: #65028e; */
+}
+
+.scripts .script-box h3 {
+  color: #444444;
+  font-weight: 700;
+}

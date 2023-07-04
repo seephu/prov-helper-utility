@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Begin Page Content -->
+<!-- Page Heading -->
+<div class="justify-content-md-center" id="hero">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-success">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+  <div class="hero d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+          <h1 data-aos="fade-up" class="text-primary font-weight-bold">Provisioning Helper Utility</h1>
+          <h2 data-aos="fade-up" data-aos-delay="400">A collection of provisioning scripts to help with daily tasks
+          </h2>
+          <div data-aos="fade-up" data-aos-delay="600">
+            <a class="btn btn-primary btn-lg mt-5" href="#scripts">
+              Explore Scripts
+            </a>
+            <a class="btn btn-outline-purple btn-lg mt-5 ml-2" href="{{ url_for('login') }}">
+              Log in
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
+          <img src="{{ url_for('static', filename='img/hero-img.png') }}" class="img-fluid" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+  <section id="scripts" class="scripts">
+
+    <div class="container" data-aos="fade-up">
+
+      <header class="section-header">
+        <h2 class="text-primary font-weight-bold">Available Scripts</h2>
+        <p>Ensure you're logged in to make full use of the SSH utilities.</p>
+      </header>
+
+      <div class="row gy-4">
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="script-box">
+            <i class="icon fa-regular fa-file-lines"></i>
+            <h3>Config Generator</h3>
+            <p>Generates configs, diagrams, and L2 test configs.</p>
+            <p>Supports all L2/L3 commercial circuits, OH SD-WAN, and Raisecoms.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="script-box">
+            <i class="fa-solid fa-archive icon"></i>
+            <h3>Decom Generator</h3>
+            <p>Gets rollback configs and generates the 'no/delete' lines for easy decommissions.</p>
+            <p>Supports all L2/L3 commercial circuits and OH SRX sites.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="700">
+          <div class="script-box">
+            <i class="fa-solid fa-file-excel icon"></i>
+            <h3>EAI Data Loader (TBD)</h3>
+            <p>Generates an Excel file to be used by EAI Data Loader for creating elements (ports/LTPs/channels)
+              and assigning IP addresses.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+          <div class="script-box">
+            <i class="fa-solid fa-pen-ruler icon"></i>
+            <h3>OH Diagram Generator</h3>
+            <p>Generates diagrams for an OH SRX site using the config gen's keyfile.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+          <div class="script-box">
+            <i class="fa-solid fa-network-wired icon"></i>
+            <h3>OH IP Validator</h3>
+            <p>Parses an OH diagram, gets all IP addresses and checks them on the network.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+          <div class="script-box">
+            <i class="fa-solid fa-cloud icon"></i>
+            <h3>COIN Path Names</h3>
+            <p>Generates the path names between 2 optical paths for easy EAI modeling of COIN circuits.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section><!-- End Scripts Section -->
+</div>
+{% block styles %}
+<style>
+    #navTop {
+      margin-bottom: 0rem !important
+    }
+
+    .container-fluid {
+      padding-left: 0rem;
+      padding-right: 0rem;
+    }
+</style>
+
+{% endblock %}
+<script>
+  $('html').css('overflow-x', 'initial');
+  AOS.init();
+</script>
+{% endblock %}

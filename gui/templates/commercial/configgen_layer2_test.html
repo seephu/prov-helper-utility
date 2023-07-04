@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row justify-content-md-center">
+        <div class="col-lg-8">
+            <h1 class="h3 mb-4 text-gray-800 text-center">Config Generator - Layer 2 Test Set</h1>
+            <hr>
+            <form action="{{ url_for('commercial_configgen', circuit_type='layer2_test') }}" method="post"
+                  enctype="multipart/form-data" autocomplete="off" class="form-progress">
+                  <div class="progress mb-3 mt-3">
+                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                  </div>
+                <div class="card shadow mb-4" id="accordionForm">
+                    <div class="card">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Circuit Information</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                   data-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in">
+                                    <div class="dropdown-header">Information:</div>
+                                    <a class="dropdown-item" href="#instructionModal" data-toggle="modal">
+                                        Instructions
+                                    </a>
+                                    <a class="dropdown-item" href="#exfoModal" data-toggle="modal">
+                                        EXFO Test Set Guide</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="collapseCircuit" class="collapse show" data-parent="#accordionForm">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="router">Router</label>
+                                        <select class="form-control" name="router" id="router" required>
+                                            <option></option>
+                                            {% for router in asr9k_routers %}
+                                            <option>{{ router }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="circuitId">Circuit ID</label>
+                                    <input type="text" class="form-control" name="circuitId" id="circuitId" required>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label for="interface">Interface</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <select class="form-control" name="portSpeed" id="portSpeed" required>
+                                                    <option value="">Select</option>
+                                                    {% for val in interface_speeds.values() %}
+                                                    <option value="{{ val['value'] }}">{{ val['select'] }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <input type="text" class="form-control" name="interface" id="interface"
+                                                   placeholder="0/0/0/0" required></div>
+                                    </div>
+                                    <div class="col">
+                                        <label for="vlan">VLAN</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">.</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="vlan" id="vlan"
+                                            maxlength="4" data-validate="vlan">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-6">
+                                        <label for="bandwidth">Bandwidth</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" name="bandwidth" id="bandwidth"
+                                                   required>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">Mbps</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--            Customize Layer 2 test set options (currently only uses static RCH test set)
+                                    <div class="card">
+                                        <div class="card-header py-3" id="headerTestSet">
+                                            <h2 class="mb-0">
+                                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                                        data-target="#collapseTestSet">
+                                                    Layer 2 Test Configuration
+                                                </button>
+                                            </h2>
+                                        </div>
+                                        <div id="collapseTestSet" class="collapse show" data-parent="#accordionForm">
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label for="testSet">Test Set</label>
+                                                    <select class="form-control" name="testSet" id="testSet">
+                                                        <option>Select</option>
+                                                        <option>EBCKONCBPED30 - TenGigE0/7/0/4</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="testVlan">VLAN</label>
+                                                    <input type="number" class="form-control" name="testVlan" id="testVlan">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="testPswId">Pseudowire ID</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" name="testPswId" id="testPswId">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-secondary" type="button">
+                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="custom-control custom-checkbox my-2">
+                                <input type="checkbox" class="custom-control-input" name="vpls" id="vpls" disabled>
+                                <label class="custom-control-label" for="vpls">VPLS Leg (pending development)</label>
+                            </div>
+                            <button class="btn btn-primary btn-icon-split mt-3" type="submit">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-download text-white-50"></i>
+                            </span>
+                                <span class="text">Generate</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Instruction Modal -->
+<div class="modal fade" id="instructionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">Instructions</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>Fill in the router/interface that's facing the customer</li>
+                    <li>Configs will be generated for a Layer 2 circuit to the RCH 10G test port
+                        (EBCKONCBPED30 - Ten0/7/0/4)
+                    </li>
+
+                </ol>
+                <hr>
+                <p>For instructions on how to use the test set, see the EXFO Guide page.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EXFO Test Set Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="exfoModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold">EXFO Test Set Guide</h5>
+                <button class="close" type="button" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>Connecting to the EXFO VM</b> <br></p>
+                <ol>
+                    <li>RDP to gateway: 192.75.109.218 (HOTFS credentials)</li>
+                    <li>From the gateway, RDP to one of the EXFO VMs:
+                        <ul>
+                            <li>Provisioning: 10.247.11.7
+                                <ul>
+                                    <li>Username: ITMC-EXFO-3\prov</li>
+                                    <li>Password: ...</li>
+                                </ul>
+                            </li>
+                            <li>ITMC: 10.247.11.11 (back-up if .7 is down)
+                                <ul>
+                                    <li>Username: ITMC-EXFO-4\exfo</li>
+                                    <li>Password: ...</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>Open EXFO Remote Toolbox & connect to the test set
+                        <ul>
+                            <li>10.247.11.10</li>
+                        </ul>
+                    </li>
+                </ol>
+                <hr/>
+                <p><b>EXFO Test Configurator</b> <br><br></p>
+                <P>
+                    • Select Slot<br>
+                    ○ Slot 1: eHealth<br>
+                    ○ Slot 2: Commercial<br>
+                    ○ Slot 3: Spare/backup slot<br>
+                • Test Configurator<br>
+                    ○ RCH - EBCKONCBPED30<br>
+                        § Gi0/5/0/19 (1GE Optical - Port 1)<br>
+                        § Te0/7/0/4 (10GE - Port 2)<br>
+                    ○ TFS - 10.246.11.10 - TOROONXNPED30<br>
+                        § Te0/0/0/19 (10GE - Port 2)<br>
+                    ○ 1GE / 10GE > Network<br>
+                        § Set VLAN<br>
+                        § Note: if port is showing link down, try flipping auto-negotiation on/off<br>
+                    ○ Service<br>
+                        § VLAN<br>
+                        § IP<br>
+                        § Default gateway (10.10.10.1)<br>
+                        § Bandwidth<br>
+                    ○ Ensure MAC address Is resolved and ping is successful<br>
+                    ○ Fill out fields<br>
+                        § Job ID, Circuit ID, Operator Name, Report Header, File Name<br>
+                    ○ Save report to mapped network drive<br>
+                </P>
+                <hr/>
+                <p><b>Troubleshooting</b> <br><br>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+<script src="{{ url_for('static', filename='js/commercial-config-gen.js') }}"></script>
+{% endblock %}
